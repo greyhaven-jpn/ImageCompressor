@@ -7,7 +7,7 @@
         "key": "Image Compressor",
         "location": {
           "startingColumn": 30,
-          "startingLine": 110
+          "startingLine": 156
         }
       },
       {
@@ -15,15 +15,15 @@
         "key": "Ambil Gambar",
         "location": {
           "startingColumn": 30,
-          "startingLine": 19
+          "startingLine": 29
         }
       },
       {
         "comment": "",
-        "key": "Gambar Asli",
+        "key": "Preview Gambar Asli",
         "location": {
           "startingColumn": 34,
-          "startingLine": 42
+          "startingLine": 57
         }
       },
       {
@@ -31,7 +31,7 @@
         "key": "Pengaturan Kompresi",
         "location": {
           "startingColumn": 34,
-          "startingLine": 56
+          "startingLine": 83
         }
       },
       {
@@ -39,15 +39,23 @@
         "key": "Hasil Kompresi",
         "location": {
           "startingColumn": 34,
-          "startingLine": 75
+          "startingLine": 112
         }
       },
       {
         "comment": "",
-        "key": "Pilih dari Galeri",
+        "key": "Jumlah gambar dipilih: %lld",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 50
+        }
+      },
+      {
+        "comment": "",
+        "key": "Pilih Beberapa Gambar dari Galeri",
         "location": {
           "startingColumn": 39,
-          "startingLine": 26
+          "startingLine": 37
         }
       },
       {
@@ -55,44 +63,28 @@
         "key": "Ambil Foto Langsung",
         "location": {
           "startingColumn": 39,
-          "startingLine": 34
+          "startingLine": 45
         }
       },
       {
         "comment": "",
-        "key": "Ukuran asli: %@",
+        "key": "Asli: %@",
         "location": {
-          "startingColumn": 42,
-          "startingLine": 50
+          "startingColumn": 54,
+          "startingLine": 69
         }
       },
       {
         "comment": "",
-        "key": "Quality: %lld%%",
+        "key": "Gambar %lld",
         "location": {
-          "startingColumn": 38,
-          "startingLine": 58
+          "startingColumn": 50,
+          "startingLine": 73
         }
       },
       {
         "comment": "",
-        "key": "Kompres Sekarang",
-        "location": {
-          "startingColumn": 43,
-          "startingLine": 66
-        }
-      },
-      {
-        "comment": "",
-        "key": "Ukuran hasil: %@",
-        "location": {
-          "startingColumn": 38,
-          "startingLine": 82
-        }
-      },
-      {
-        "comment": "",
-        "key": "Hemat: %@",
+        "key": "Quality manual: %lld%%",
         "location": {
           "startingColumn": 42,
           "startingLine": 88
@@ -100,10 +92,66 @@
       },
       {
         "comment": "",
-        "key": "Bagikan / Simpan Hasil",
+        "key": "Auto compress sampai < 1 MB",
+        "location": {
+          "startingColumn": 40,
+          "startingLine": 85
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sedang Mengompres...",
+        "location": {
+          "startingColumn": 57,
+          "startingLine": 100
+        }
+      },
+      {
+        "comment": "",
+        "key": "Compress & Simpan ke Gallery",
+        "location": {
+          "startingColumn": 82,
+          "startingLine": 100
+        }
+      },
+      {
+        "comment": "",
+        "key": "Gambar %lld",
+        "location": {
+          "startingColumn": 46,
+          "startingLine": 121
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ukuran asli: %@",
+        "location": {
+          "startingColumn": 46,
+          "startingLine": 124
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ukuran hasil: %@",
+        "location": {
+          "startingColumn": 46,
+          "startingLine": 127
+        }
+      },
+      {
+        "comment": "",
+        "key": "Hemat: %@",
+        "location": {
+          "startingColumn": 46,
+          "startingLine": 130
+        }
+      },
+      {
+        "comment": "",
+        "key": "Bagikan Semua Hasil",
         "location": {
           "startingColumn": 43,
-          "startingLine": 95
+          "startingLine": 141
         }
       }
     ]
