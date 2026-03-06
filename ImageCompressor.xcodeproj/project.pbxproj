@@ -414,9 +414,9 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ImageCompressor/Info.plist;
-				INFOPLIST_KEY_NSCameraUsageDescription = "Aplikasi membutuhkan kamera untuk mengambil foto yang akan dikompres.";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Aplikasi membutuhkan izin untuk menyimpan hasil kompres ke galeri.";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Aplikasi membutuhkan akses galeri untuk memilih gambar yang akan dikompres.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs access to the camera to capture photos for compression.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "This app needs permission to save compressed images to your photo library.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app needs access to your photo library so you can select images to compress.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -446,9 +446,9 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ImageCompressor/Info.plist;
-				INFOPLIST_KEY_NSCameraUsageDescription = "Aplikasi membutuhkan kamera untuk mengambil foto yang akan dikompres.";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Aplikasi membutuhkan izin untuk menyimpan hasil kompres ke galeri.";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Aplikasi membutuhkan akses galeri untuk memilih gambar yang akan dikompres.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs access to the camera to capture photos for compression.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "This app needs permission to save compressed images to your photo library.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app needs access to your photo library so you can select images to compress.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

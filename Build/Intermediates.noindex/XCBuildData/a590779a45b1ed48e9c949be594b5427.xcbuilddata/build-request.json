@@ -1,16 +1,16 @@
 {
   "buildCommand" : {
-    "command" : "build",
-    "skipDependencies" : false,
-    "style" : "buildOnly"
+    "command" : "preview",
+    "style" : "xojit"
   },
+  "buildDescriptionID" : "e4b8a348368f30a1527de6fb3465239e",
   "configuredTargets" : [
     {
       "guid" : "e12e378fdc9d2e9f517a4ea508e0d6d341e5a070ec555437823574eb88fa76f5"
     }
   ],
   "containerPath" : "/Users/user/Documents/Project/Mac Apps/ImageCompressor/ImageCompressor/ImageCompressor.xcodeproj",
-  "continueBuildingAfterErrors" : false,
+  "continueBuildingAfterErrors" : true,
   "dependencyScope" : "workspace",
   "enableIndexBuildArena" : false,
   "hideShellScriptEnvironment" : false,
@@ -57,7 +57,6 @@
       }
     }
   },
-  "qos" : "default",
   "schemeCommand" : "launch",
   "showNonLoggedProgress" : true,
   "useDryRun" : false,

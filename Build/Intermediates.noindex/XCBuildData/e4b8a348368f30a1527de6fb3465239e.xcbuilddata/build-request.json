@@ -1,8 +1,7 @@
 {
   "buildCommand" : {
-    "command" : "build",
-    "skipDependencies" : false,
-    "style" : "buildOnly"
+    "command" : "preview",
+    "style" : "xojit"
   },
   "configuredTargets" : [
     {
@@ -10,7 +9,7 @@
     }
   ],
   "containerPath" : "/Users/user/Documents/Project/Mac Apps/ImageCompressor/ImageCompressor/ImageCompressor.xcodeproj",
-  "continueBuildingAfterErrors" : false,
+  "continueBuildingAfterErrors" : true,
   "dependencyScope" : "workspace",
   "enableIndexBuildArena" : false,
   "hideShellScriptEnvironment" : false,

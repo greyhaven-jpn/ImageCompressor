@@ -1,7 +1,3 @@
-//  ImageCompressor
-//
-//  Created by Rafid on 2026/03/06.
-//
 import SwiftUI
 import PhotosUI
 import UIKit
@@ -12,21 +8,20 @@ struct ContentView: View {
     @State private var originalImages: [UIImage] = []
     @State private var compressedResults: [CompressedImageResult] = []
 
-    @State private var quality: Double = 0.6
-    @State private var useAutoUnder1MB = true
-
     @State private var showCamera = false
     @State private var showShareSheet = false
 
-    @State private var statusMessage = "Pilih satu atau beberapa gambar dari galeri, atau ambil foto baru."
+    @State private var statusMessage = "Select multiple images from your gallery or take a photo. Everything will be automatically compressed below 750 KB and saved to Photos."
     @State private var isCompressing = false
+
+    private let targetSizeBytes = 750 * 1024 // 750 KB
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
 
-                    GroupBox("Ambil Gambar") {
+                    GroupBox("Select Images") {
                         VStack(spacing: 12) {
                             PhotosPicker(
                                 selection: $selectedItems,
@@ -34,27 +29,34 @@ struct ContentView: View {
                                 matching: .images,
                                 photoLibrary: .shared()
                             ) {
-                                Label("Pilih Beberapa Gambar dari Galeri", systemImage: "photo.on.rectangle.angled")
+                                Label("Pick Multiple Images from Gallery", systemImage: "photo.on.rectangle.angled")
                                     .frame(maxWidth: .infinity)
                             }
                             .buttonStyle(.borderedProminent)
+                            .disabled(isCompressing)
 
                             Button {
                                 showCamera = true
                             } label: {
-                                Label("Ambil Foto Langsung", systemImage: "camera")
+                                Label("Take Photo", systemImage: "camera")
                                     .frame(maxWidth: .infinity)
                             }
                             .buttonStyle(.bordered)
+                            .disabled(isCompressing)
 
-                            Text("Jumlah gambar dipilih: \(originalImages.count)")
+                            Text("Automatic target: < 750 KB")
                                 .font(.subheadline)
                                 .frame(maxWidth: .infinity, alignment: .leading)
+
+                            if isCompressing {
+                                ProgressView()
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
                         }
                     }
 
                     if !originalImages.isEmpty {
-                        GroupBox("Preview Gambar Asli") {
+                        GroupBox("Original Image Preview") {
                             ScrollView(.horizontal) {
                                 HStack(spacing: 12) {
                                     ForEach(Array(originalImages.enumerated()), id: \.offset) { index, image in
@@ -66,11 +68,11 @@ struct ContentView: View {
                                                 .clipShape(RoundedRectangle(cornerRadius: 12))
 
                                             if let data = image.jpegData(compressionQuality: 1.0) {
-                                                Text("Asli: \(formatBytes(data.count))")
+                                                Text("Original: \(formatBytes(data.count))")
                                                     .font(.caption)
                                             }
 
-                                            Text("Gambar \(index + 1)")
+                                            Text("Image \(index + 1)")
                                                 .font(.caption2)
                                                 .foregroundStyle(.secondary)
                                         }
@@ -79,37 +81,10 @@ struct ContentView: View {
                                 .padding(.vertical, 4)
                             }
                         }
-
-                        GroupBox("Pengaturan Kompresi") {
-                            VStack(alignment: .leading, spacing: 12) {
-                                Toggle("Auto compress sampai < 1 MB", isOn: $useAutoUnder1MB)
-
-                                if !useAutoUnder1MB {
-                                    Text("Quality manual: \(Int(quality * 100))%")
-                                        .font(.headline)
-
-                                    Slider(value: $quality, in: 0.1...1.0, step: 0.05)
-                                }
-
-                                Button {
-                                    Task {
-                                        await compressAllImages()
-                                    }
-                                } label: {
-                                    Label(
-                                        isCompressing ? "Sedang Mengompres..." : "Compress & Simpan ke Gallery",
-                                        systemImage: "arrow.down.circle"
-                                    )
-                                    .frame(maxWidth: .infinity)
-                                }
-                                .buttonStyle(.borderedProminent)
-                                .disabled(isCompressing)
-                            }
-                        }
                     }
 
                     if !compressedResults.isEmpty {
-                        GroupBox("Hasil Kompresi") {
+                        GroupBox("Compressed Results") {
                             VStack(alignment: .leading, spacing: 12) {
                                 ForEach(Array(compressedResults.enumerated()), id: \.offset) { index, result in
                                     VStack(alignment: .leading, spacing: 8) {
@@ -118,16 +93,16 @@ struct ContentView: View {
                                             .scaledToFit()
                                             .frame(maxHeight: 180)
 
-                                        Text("Gambar \(index + 1)")
+                                        Text("Image \(index + 1)")
                                             .font(.headline)
 
-                                        Text("Ukuran asli: \(formatBytes(result.originalSize))")
+                                        Text("Original size: \(formatBytes(result.originalSize))")
                                             .font(.subheadline)
 
-                                        Text("Ukuran hasil: \(formatBytes(result.compressedSize))")
+                                        Text("Compressed size: \(formatBytes(result.compressedSize))")
                                             .font(.subheadline)
 
-                                        Text("Hemat: \(formatBytes(max(0, result.originalSize - result.compressedSize)))")
+                                        Text("Saved space: \(formatBytes(max(0, result.originalSize - result.compressedSize)))")
                                             .font(.subheadline)
                                             .foregroundStyle(.green)
 
@@ -138,7 +113,7 @@ struct ContentView: View {
                                 Button {
                                     showShareSheet = true
                                 } label: {
-                                    Label("Bagikan Semua Hasil", systemImage: "square.and.arrow.up")
+                                    Label("Share All Results", systemImage: "square.and.arrow.up")
                                         .frame(maxWidth: .infinity)
                                 }
                                 .buttonStyle(.bordered)
@@ -156,9 +131,9 @@ struct ContentView: View {
             .navigationTitle("Image Compressor")
             .sheet(isPresented: $showCamera) {
                 CameraPicker { image in
-                    originalImages = [image]
-                    compressedResults = []
-                    statusMessage = "Foto berhasil diambil. Sekarang tekan tombol compress."
+                    Task {
+                        await processCameraImage(image)
+                    }
                 }
             }
             .sheet(isPresented: $showShareSheet) {
@@ -168,16 +143,16 @@ struct ContentView: View {
                 }
             }
             .task(id: selectedItems) {
-                await loadSelectedImages()
+                await loadAndProcessSelectedImages()
             }
         }
     }
 
-    // MARK: - Load images from gallery
-    private func loadSelectedImages() async {
+    private func loadAndProcessSelectedImages() async {
         guard !selectedItems.isEmpty else { return }
 
-        statusMessage = "Sedang memuat gambar dari galeri..."
+        isCompressing = true
+        statusMessage = "Loading images from the gallery..."
         compressedResults = []
         originalImages = []
 
@@ -190,44 +165,31 @@ struct ContentView: View {
                     loadedImages.append(image)
                 }
             } catch {
-                statusMessage = "Ada gambar yang gagal dimuat: \(error.localizedDescription)"
+                statusMessage = "Some images could not be loaded: \(error.localizedDescription)"
             }
         }
 
         originalImages = loadedImages
-        statusMessage = "\(loadedImages.count) gambar berhasil dimuat. Siap untuk dikompres."
-    }
 
-    // MARK: - Compress all images
-    private func compressAllImages() async {
-        guard !originalImages.isEmpty else {
-            statusMessage = "Belum ada gambar untuk dikompres."
+        if loadedImages.isEmpty {
+            isCompressing = false
+            statusMessage = "No images were successfully loaded."
             return
         }
 
-        isCompressing = true
-        statusMessage = "Sedang mengompres \(originalImages.count) gambar..."
-        compressedResults = []
+        statusMessage = "\(loadedImages.count) images loaded. Automatically compressing below 750 KB and saving to Photos..."
 
         var results: [CompressedImageResult] = []
         var savedCount = 0
 
-        for image in originalImages {
-            guard let originalData = image.jpegData(compressionQuality: 1.0) else { continue }
-
-            let compressedData: Data?
-            if useAutoUnder1MB {
-                compressedData = autoCompressToUnder1MB(image: image)
-            } else {
-                compressedData = image.jpegData(compressionQuality: quality)
-            }
-
-            guard let compressedData,
+        for image in loadedImages {
+            guard let originalData = image.jpegData(compressionQuality: 1.0),
+                  let compressedData = autoCompressToTarget(image: image, targetSize: targetSizeBytes),
                   let compressedImage = UIImage(data: compressedData) else {
                 continue
             }
 
-            let saveSuccess = await saveImageToPhotoLibrary(image: compressedImage)
+            let saveSuccess = await saveImageDataToPhotoLibrary(data: compressedData)
             if saveSuccess {
                 savedCount += 1
             }
@@ -243,23 +205,54 @@ struct ContentView: View {
 
         compressedResults = results
         isCompressing = false
+        statusMessage = "Done. \(results.count) images were compressed to under 750 KB, and \(savedCount) were saved to Photos."
+    }
 
-        if useAutoUnder1MB {
-            statusMessage = "Selesai. \(results.count) gambar dikompres dengan target < 1 MB, \(savedCount) berhasil disimpan ke gallery."
+    private func processCameraImage(_ image: UIImage) async {
+        isCompressing = true
+        statusMessage = "Photo captured. Automatically compressing below 750 KB and saving to Photos..."
+
+        originalImages = [image]
+        compressedResults = []
+
+        guard let originalData = image.jpegData(compressionQuality: 1.0),
+              let compressedData = autoCompressToTarget(image: image, targetSize: targetSizeBytes),
+              let compressedImage = UIImage(data: compressedData) else {
+            isCompressing = false
+            statusMessage = "Failed to process the photo from the camera."
+            return
+        }
+
+        let saveSuccess = await saveImageDataToPhotoLibrary(data: compressedData)
+
+        let result = CompressedImageResult(
+            image: compressedImage,
+            data: compressedData,
+            originalSize: originalData.count,
+            compressedSize: compressedData.count
+        )
+
+        compressedResults = [result]
+        isCompressing = false
+
+        if saveSuccess {
+            statusMessage = "The photo was compressed to under 750 KB and saved to Photos."
         } else {
-            statusMessage = "Selesai. \(results.count) gambar dikompres manual, \(savedCount) berhasil disimpan ke gallery."
+            statusMessage = "The photo was compressed, but it could not be saved to Photos."
         }
     }
 
-    // MARK: - Auto compress under 1 MB
-    private func autoCompressToUnder1MB(image: UIImage) -> Data? {
-        let targetSize = 1_000_000 // ~1 MB
+    private func autoCompressToTarget(image: UIImage, targetSize: Int) -> Data? {
+        if let originalData = image.jpegData(compressionQuality: 1.0),
+           originalData.count <= targetSize {
+            return originalData
+        }
 
-        // Coba dari kualitas tinggi ke rendah
+        var currentImage = image
         var bestData: Data?
 
         for q in stride(from: 1.0, through: 0.1, by: -0.05) {
-            if let data = image.jpegData(compressionQuality: q) {
+            if let data = currentImage.jpegData(compressionQuality: q) {
                 bestData = data
                 if data.count <= targetSize {
                     return data
@@ -267,14 +260,10 @@ struct ContentView: View {
             }
         }
 
-        // Kalau masih belum < 1MB, resize gambar bertahap
-        var currentImage = image
-        var resizeStep: CGFloat = 0.9
-
-        for _ in 0..<8 {
+        for _ in 0..<10 {
             let newSize = CGSize(
-                width: currentImage.size.width * resizeStep,
-                height: currentImage.size.height * resizeStep
+                width: currentImage.size.width * 0.9,
+                height: currentImage.size.height * 0.9
             )
 
             guard let resizedImage = resizeImage(currentImage, targetSize: newSize) else {
@@ -283,7 +272,7 @@ struct ContentView: View {
 
             currentImage = resizedImage
 
-            for q in stride(from: 0.7, through: 0.1, by: -0.05) {
+            for q in stride(from: 0.9, through: 0.1, by: -0.05) {
                 if let data = currentImage.jpegData(compressionQuality: q) {
                     bestData = data
                     if data.count <= targetSize {
@@ -291,23 +280,22 @@ struct ContentView: View {
                     }
                 }
             }
-
-            resizeStep = 0.9
         }
 
         return bestData
     }
 
-    // MARK: - Resize helper
     private func resizeImage(_ image: UIImage, targetSize: CGSize) -> UIImage? {
-        let renderer = UIGraphicsImageRenderer(size: targetSize)
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+
+        let renderer = UIGraphicsImageRenderer(size: targetSize, format: format)
         return renderer.image { _ in
             image.draw(in: CGRect(origin: .zero, size: targetSize))
         }
     }
 
-    // MARK: - Save to photo library
-    private func saveImageToPhotoLibrary(image: UIImage) async -> Bool {
+    private func saveImageDataToPhotoLibrary(data: Data) async -> Bool {
         let status = PHPhotoLibrary.authorizationStatus(for: .addOnly)
 
         if status == .notDetermined {
@@ -321,7 +309,9 @@ struct ContentView: View {
 
         return await withCheckedContinuation { continuation in
             PHPhotoLibrary.shared().performChanges({
-                PHAssetChangeRequest.creationRequestForAsset(from: image)
+                let options = PHAssetResourceCreationOptions()
+                let request = PHAssetCreationRequest.forAsset()
+                request.addResource(with: .photo, data: data, options: options)
             }) { success, _ in
                 continuation.resume(returning: success)
             }
@@ -336,7 +326,6 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - Formatter
     private func formatBytes(_ bytes: Int) -> String {
         let formatter = ByteCountFormatter()
         formatter.countStyle = .file
@@ -344,7 +333,6 @@ struct ContentView: View {
     }
 }
 
-// MARK: - Model
 struct CompressedImageResult {
     let image: UIImage
     let data: Data
