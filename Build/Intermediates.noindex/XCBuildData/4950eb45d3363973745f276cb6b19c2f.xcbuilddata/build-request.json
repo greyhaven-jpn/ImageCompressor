@@ -1,0 +1,69 @@
+{
+  "buildCommand" : {
+    "command" : "build",
+    "skipDependencies" : false,
+    "style" : "buildAndRun"
+  },
+  "configuredTargets" : [
+    {
+      "guid" : "e12e378fdc9d2e9f517a4ea508e0d6d341e5a070ec555437823574eb88fa76f5"
+    }
+  ],
+  "containerPath" : "/Users/user/Documents/Project/Mac Apps/ImageCompressor/ImageCompressor/ImageCompressor.xcodeproj",
+  "continueBuildingAfterErrors" : false,
+  "dependencyScope" : "workspace",
+  "enableIndexBuildArena" : false,
+  "hideShellScriptEnvironment" : false,
+  "parameters" : {
+    "action" : "build",
+    "activeArchitecture" : "arm64",
+    "activeRunDestination" : {
+      "disableOnlyActiveArch" : false,
+      "platform" : "iphoneos",
+      "sdk" : "iphoneos18.5",
+      "sdkVariant" : "iphoneos",
+      "supportedArchitectures" : [
+        "arm64e",
+        "arm64v8",
+        "arm64",
+        "armv8"
+      ],
+      "targetArchitecture" : "arm64"
+    },
+    "arenaInfo" : {
+      "buildIntermediatesPath" : "/Users/user/Documents/Project/Mac Apps/ImageCompressor/ImageCompressor/Build/Intermediates.noindex",
+      "buildProductsPath" : "/Users/user/Documents/Project/Mac Apps/ImageCompressor/ImageCompressor/Build/Products",
+      "derivedDataPath" : "/Users/user/Library/Developer/Xcode/DerivedData",
+      "indexDataStoreFolderPath" : "/Users/user/Library/Developer/Xcode/DerivedData/ImageCompressor-avcsesymdkugdxciozshxbbldbbx/Index.noindex/DataStore",
+      "indexEnableDataStore" : true,
+      "indexPCHPath" : "/Users/user/Library/Developer/Xcode/DerivedData/ImageCompressor-avcsesymdkugdxciozshxbbldbbx/Index.noindex/PrecompiledHeaders",
+      "pchPath" : "/Users/user/Documents/Project/Mac Apps/ImageCompressor/ImageCompressor/Build/Intermediates.noindex/PrecompiledHeaders"
+    },
+    "configurationName" : "Debug",
+    "overrides" : {
+      "synthesized" : {
+        "table" : {
+          "ASSETCATALOG_FILTER_FOR_DEVICE_MODEL" : "iPhone13,3",
+          "ASSETCATALOG_FILTER_FOR_DEVICE_OS_VERSION" : "18.7.2",
+          "ASSETCATALOG_FILTER_FOR_THINNING_DEVICE_CONFIGURATION" : "iPhone13,3",
+          "BUILD_ACTIVE_RESOURCES_ONLY" : "YES",
+          "CLANG_COVERAGE_MAPPING" : "YES",
+          "CLANG_PROFILE_DATA_DIRECTORY" : "/Users/user/Documents/Project/Mac Apps/ImageCompressor/ImageCompressor/Build/Intermediates.noindex/CodeCoverage/ProfileData",
+          "ENABLE_PREVIEWS" : "NO",
+          "ENABLE_XOJIT_PREVIEWS" : "YES",
+          "ONLY_ACTIVE_ARCH" : "YES",
+          "TARGET_DEVICE_IDENTIFIER" : "00008101-000A15863E78001E",
+          "TARGET_DEVICE_MODEL" : "iPhone13,3",
+          "TARGET_DEVICE_OS_VERSION" : "18.7.2",
+          "TARGET_DEVICE_PLATFORM_NAME" : "iphoneos"
+        }
+      }
+    }
+  },
+  "schemeCommand" : "launch",
+  "showNonLoggedProgress" : true,
+  "useDryRun" : false,
+  "useImplicitDependencies" : true,
+  "useLegacyBuildLocations" : false,
+  "useParallelTargets" : true
+}

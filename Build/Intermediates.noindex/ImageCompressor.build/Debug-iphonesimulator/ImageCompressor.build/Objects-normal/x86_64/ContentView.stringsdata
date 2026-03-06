@@ -1,0 +1,112 @@
+{
+  "source": "/Users/user/Documents/Project/Mac Apps/ImageCompressor/ImageCompressor/ImageCompressor/ContentView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Image Compressor",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 110
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ambil Gambar",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 19
+        }
+      },
+      {
+        "comment": "",
+        "key": "Gambar Asli",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 42
+        }
+      },
+      {
+        "comment": "",
+        "key": "Pengaturan Kompresi",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 56
+        }
+      },
+      {
+        "comment": "",
+        "key": "Hasil Kompresi",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 75
+        }
+      },
+      {
+        "comment": "",
+        "key": "Pilih dari Galeri",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 26
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ambil Foto Langsung",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 34
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ukuran asli: %@",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 50
+        }
+      },
+      {
+        "comment": "",
+        "key": "Quality: %lld%%",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 58
+        }
+      },
+      {
+        "comment": "",
+        "key": "Kompres Sekarang",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 66
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ukuran hasil: %@",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 82
+        }
+      },
+      {
+        "comment": "",
+        "key": "Hemat: %@",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 88
+        }
+      },
+      {
+        "comment": "",
+        "key": "Bagikan / Simpan Hasil",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 95
+        }
+      }
+    ]
+  },
+  "version": 1
+}

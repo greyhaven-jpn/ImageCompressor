@@ -29,9 +29,22 @@
 		CE5C61672F5AF7CF0075157F /* ImageCompressorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageCompressorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CE5C61812F5AFFD30075157F /* Exceptions for "ImageCompressor" folder in "ImageCompressor" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = CE5C614F2F5AF7C90075157F /* ImageCompressor */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		CE5C61522F5AF7C90075157F /* ImageCompressor */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CE5C61812F5AFFD30075157F /* Exceptions for "ImageCompressor" folder in "ImageCompressor" target */,
+			);
 			path = ImageCompressor;
 			sourceTree = "<group>";
 		};
@@ -400,6 +413,10 @@
 				DEVELOPMENT_TEAM = MS53M5RHJT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ImageCompressor/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Aplikasi membutuhkan kamera untuk mengambil foto yang akan dikompres.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Aplikasi membutuhkan izin untuk menyimpan hasil kompres ke galeri.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Aplikasi membutuhkan akses galeri untuk memilih gambar yang akan dikompres.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -428,6 +445,10 @@
 				DEVELOPMENT_TEAM = MS53M5RHJT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ImageCompressor/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Aplikasi membutuhkan kamera untuk mengambil foto yang akan dikompres.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Aplikasi membutuhkan izin untuk menyimpan hasil kompres ke galeri.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Aplikasi membutuhkan akses galeri untuk memilih gambar yang akan dikompres.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
