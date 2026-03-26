@@ -288,56 +288,11 @@ final class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegat
                      error: Error?) {
         if let error = error {
             print("Capture finished with error: \(error.localizedDescription)")
-            cleanupTemporaryMovieFile()
-            stopSession()
-            coordinator?.didFinishFlow()
-            return
         }
 
-        if resolvedSettings.livePhotoMovieDimensions.width > 0,
-           let photoData = currentPhotoData,
-           let movieURL = currentLivePhotoMovieURL {
-            saveLivePhotoToPhotoLibrary(photoData: photoData, movieURL: movieURL)
-        } else {
-            stopSession()
-            coordinator?.didFinishFlow()
-        }
-    }
-
-    private func saveLivePhotoToPhotoLibrary(photoData: Data, movieURL: URL) {
-        PHPhotoLibrary.requestAuthorization(for: .addOnly) { status in
-            guard status == .authorized || status == .limited else {
-                DispatchQueue.main.async {
-                    self.cleanupTemporaryMovieFile()
-                    self.stopSession()
-                    self.coordinator?.didFinishFlow()
-                }
-                return
-            }
-
-            PHPhotoLibrary.shared().performChanges({
-                let creationRequest = PHAssetCreationRequest.forAsset()
-
-                let photoOptions = PHAssetResourceCreationOptions()
-                creationRequest.addResource(with: .photo, data: photoData, options: photoOptions)
-
-                let movieOptions = PHAssetResourceCreationOptions()
-                movieOptions.shouldMoveFile = true
-                creationRequest.addResource(with: .pairedVideo, fileURL: movieURL, options: movieOptions)
-            }) { success, error in
-                if let error = error {
-                    print("Live Photo save error: \(error.localizedDescription)")
-                } else {
-                    print("Live Photo saved: \(success)")
-                }
-
-                DispatchQueue.main.async {
-                    self.cleanupTemporaryMovieFile()
-                    self.stopSession()
-                    self.coordinator?.didFinishFlow()
-                }
-            }
-        }
+        cleanupTemporaryMovieFile()
+        stopSession()
+        coordinator?.didFinishFlow()
     }
 
     private func cleanupTemporaryMovieFile() {
