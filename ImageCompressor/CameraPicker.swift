@@ -133,6 +133,13 @@ final class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegat
     @objc private func capturePhoto() {
         let settings = AVCapturePhotoSettings()
         settings.flashMode = .off
+
+        if #available(iOS 18.0, *) {
+            if photoOutput.isShutterSoundSuppressionSupported {
+                settings.isShutterSoundSuppressionEnabled = true
+            }
+        }
+
         photoOutput.capturePhoto(with: settings, delegate: self)
     }
 
