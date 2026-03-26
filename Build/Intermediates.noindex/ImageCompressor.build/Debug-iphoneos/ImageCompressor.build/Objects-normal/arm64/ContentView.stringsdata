@@ -36,7 +36,7 @@
       },
       {
         "comment": "",
-        "key": "Automatic target: < 750 KB",
+        "key": "Automatic target: < 500 KB",
         "location": {
           "startingColumn": 34,
           "startingLine": 47
