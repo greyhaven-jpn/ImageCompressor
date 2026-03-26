@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict/>
+<dict>
+
+    <!-- Camera -->
+    <key>NSCameraUsageDescription</key>
+    <string>This app uses the camera to capture photos for compression.</string>
+
+    <!-- Photo Library (read & write) -->
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>This app accesses your photo library to select and compress images.</string>
+
+    <!-- Photo Library Add Only (for saving compressed images) -->
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>This app saves compressed images to your photo library.</string>
+
+</dict>
 </plist>
