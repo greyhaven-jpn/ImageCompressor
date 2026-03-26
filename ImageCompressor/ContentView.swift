@@ -130,7 +130,7 @@ struct ContentView: View {
             }
             .navigationTitle("Image Compressor")
             .sheet(isPresented: $showCamera) {
-                CameraPicker { image in
+                CameraPicker(livePhotoEnabled: true) { image in
                     Task {
                         await processCameraImage(image)
                     }

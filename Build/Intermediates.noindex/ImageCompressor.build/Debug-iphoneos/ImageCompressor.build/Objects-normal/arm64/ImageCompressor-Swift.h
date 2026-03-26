@@ -280,6 +280,7 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #pragma clang diagnostic ignored "-Watimport-in-framework-header"
 #endif
 @import AVFoundation;
+@import CoreMedia;
 @import UIKit;
 #endif
 
@@ -304,7 +305,9 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #if defined(__OBJC__)
 
 @class AVCapturePhotoOutput;
+@class AVCaptureResolvedPhotoSettings;
 @class AVCapturePhoto;
+@class NSURL;
 @class NSString;
 @class NSBundle;
 @class NSCoder;
@@ -312,7 +315,11 @@ SWIFT_CLASS("_TtC15ImageCompressor20CameraViewController")
 @interface CameraViewController : UIViewController <AVCapturePhotoCaptureDelegate>
 - (void)viewDidLoad;
 - (void)viewDidLayoutSubviews;
+- (void)captureOutput:(AVCapturePhotoOutput * _Nonnull)output willBeginCaptureForResolvedSettings:(AVCaptureResolvedPhotoSettings * _Nonnull)resolvedSettings;
 - (void)captureOutput:(AVCapturePhotoOutput * _Nonnull)output didFinishProcessingPhoto:(AVCapturePhoto * _Nonnull)photo error:(NSError * _Nullable)error;
+- (void)captureOutput:(AVCapturePhotoOutput * _Nonnull)output didFinishRecordingLivePhotoMovieForEventualFileAtURL:(NSURL * _Nonnull)outputFileURL resolvedSettings:(AVCaptureResolvedPhotoSettings * _Nonnull)resolvedSettings;
+- (void)captureOutput:(AVCapturePhotoOutput * _Nonnull)output didFinishProcessingLivePhotoToMovieFileAtURL:(NSURL * _Nonnull)outputFileURL duration:(CMTime)duration photoDisplayTime:(CMTime)photoDisplayTime resolvedSettings:(AVCaptureResolvedPhotoSettings * _Nonnull)resolvedSettings error:(NSError * _Nullable)error;
+- (void)captureOutput:(AVCapturePhotoOutput * _Nonnull)output didFinishCaptureForResolvedSettings:(AVCaptureResolvedPhotoSettings * _Nonnull)resolvedSettings error:(NSError * _Nullable)error;
 - (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end

@@ -15,5 +15,8 @@
     <key>NSPhotoLibraryAddUsageDescription</key>
     <string>This app saves compressed images to your photo library.</string>
 
+    <key>NSMicrophoneUsageDescription</key>
+    <string>This app uses the microphone when capturing Live Photos.</string>
+
 </dict>
 </plist>
