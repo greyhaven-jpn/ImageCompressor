@@ -4,6 +4,8 @@ import UIKit
 import Photos
 
 struct ContentView: View {
+    @AppStorage("compressionTargetKB") private var compressionTargetKB: Double = 500
+    
     @State private var selectedItems: [PhotosPickerItem] = []
     @State private var originalImages: [UIImage] = []
     @State private var compressedResults: [CompressedImageResult] = []
@@ -11,15 +13,49 @@ struct ContentView: View {
     @State private var showCamera = false
     @State private var showShareSheet = false
 
-    @State private var statusMessage = "Select multiple images from your gallery or take a photo. Everything will be automatically compressed below 500 KB, saved to Photos, and the original gallery image will be deleted."
+    @AppStorage("liveCameraModeEnabled") private var liveCameraModeEnabled = true
+    
+    @State private var statusMessage = "Select multiple images from your gallery or take a photo. Everything will be automatically compressed below 500 KB and saved to Photos."
     @State private var isCompressing = false
 
-    private let targetSizeBytes = 500 * 1024 // 500 KB
-
+    private var targetSizeBytes: Int {
+        Int(compressionTargetKB) * 1024
+    }
+    
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
+
+                    GroupBox("Settings") {
+                        VStack(alignment: .leading, spacing: 14) {
+                            Toggle("Enable Live Camera Mode", isOn: $liveCameraModeEnabled)
+
+                            Text(liveCameraModeEnabled
+                                 ? "Live Camera Mode is ON. The camera will try to capture using Live Photo mode when supported."
+                                 : "Live Camera Mode is OFF. The camera will capture a normal photo.")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+
+                            Divider()
+
+                            VStack(alignment: .leading, spacing: 10) {
+                                HStack {
+                                    Text("Compression Target")
+                                    Spacer()
+                                    Text("\(Int(compressionTargetKB)) KB")
+                                        .foregroundStyle(.secondary)
+                                }
+
+                                Slider(value: $compressionTargetKB, in: 100...2000, step: 50)
+
+                                Text("Move the slider to set the target compressed size.")
+                                    .font(.footnote)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
 
                     GroupBox("Select Images") {
                         VStack(spacing: 12) {
@@ -38,13 +74,13 @@ struct ContentView: View {
                             Button {
                                 showCamera = true
                             } label: {
-                                Label("Take Photo", systemImage: "camera")
+                                Label("Take Photo", systemImage: liveCameraModeEnabled ? "livephoto" : "camera")
                                     .frame(maxWidth: .infinity)
                             }
                             .buttonStyle(.bordered)
                             .disabled(isCompressing)
 
-                            Text("Automatic target: < 500 KB")
+                            Text("Automatic target: < \(Int(compressionTargetKB)) KB")
                                 .font(.subheadline)
                                 .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -130,7 +166,7 @@ struct ContentView: View {
             }
             .navigationTitle("Image Compressor")
             .sheet(isPresented: $showCamera) {
-                CameraPicker(livePhotoEnabled: true) { image in
+                CameraPicker(livePhotoEnabled: liveCameraModeEnabled) { image in
                     Task {
                         await processCameraImage(image)
                     }
@@ -151,31 +187,24 @@ struct ContentView: View {
     private func loadAndProcessSelectedImages() async {
         guard !selectedItems.isEmpty else { return }
 
-        let permissionGranted = await requestPhotoLibraryAccessIfNeeded()
-        guard permissionGranted else {
-            statusMessage = "Photo Library access was denied. Please allow read and write access in Settings."
-            return
-        }
-
         isCompressing = true
         statusMessage = "Loading images from the gallery..."
         compressedResults = []
         originalImages = []
 
-        var loadedEntries: [(image: UIImage, assetId: String?)] = []
+        var loadedImages: [UIImage] = []
 
         for item in selectedItems {
             do {
                 if let data = try await item.loadTransferable(type: Data.self),
                    let image = UIImage(data: data) {
-                    loadedEntries.append((image: image, assetId: item.itemIdentifier))
+                    loadedImages.append(image)
                 }
             } catch {
                 statusMessage = "Some images could not be loaded: \(error.localizedDescription)"
             }
         }
 
-        let loadedImages = loadedEntries.map { $0.image }
         originalImages = loadedImages
 
         if loadedImages.isEmpty {
@@ -184,16 +213,12 @@ struct ContentView: View {
             return
         }
 
-        statusMessage = "\(loadedImages.count) images loaded. Compressing, saving to Photos, and deleting original gallery images..."
+        statusMessage = "\(loadedImages.count) images loaded. Automatically compressing below \(Int(compressionTargetKB)) KB and saving to Photos..."
 
         var results: [CompressedImageResult] = []
         var savedCount = 0
-        var deletedCount = 0
 
-        for entry in loadedEntries {
-            let image = entry.image
-            let assetId = entry.assetId
-
+        for image in loadedImages {
             guard let originalData = image.jpegData(compressionQuality: 1.0),
                   let compressedData = autoCompressToTarget(image: image, targetSize: targetSizeBytes),
                   let compressedImage = UIImage(data: compressedData) else {
@@ -201,17 +226,8 @@ struct ContentView: View {
             }
 
             let saveSuccess = await saveImageDataToPhotoLibrary(data: compressedData)
-
-            var deleteSuccess = false
-            if saveSuccess, let assetId {
-                deleteSuccess = await deleteOriginalPhoto(assetIdentifier: assetId)
-            }
-
             if saveSuccess {
                 savedCount += 1
-            }
-            if deleteSuccess {
-                deletedCount += 1
             }
 
             let result = CompressedImageResult(
@@ -225,18 +241,14 @@ struct ContentView: View {
 
         compressedResults = results
         isCompressing = false
-        statusMessage = "Done. \(results.count) images were compressed, \(savedCount) were saved to Photos, and \(deletedCount) original gallery images were deleted."
+        statusMessage = "Done. \(results.count) images were compressed to under \(Int(compressionTargetKB)) KB, and \(savedCount) were saved to Photos."
     }
 
     private func processCameraImage(_ image: UIImage) async {
-        let permissionGranted = await requestPhotoLibraryAccessIfNeeded()
-        guard permissionGranted else {
-            statusMessage = "Photo Library access was denied. Please allow read and write access in Settings."
-            return
-        }
-
         isCompressing = true
-        statusMessage = "Photo captured. Automatically compressing below 500 KB and saving to Photos..."
+        statusMessage = liveCameraModeEnabled
+            ? "Photo captured in Live Camera Mode. Automatically compressing below \(Int(compressionTargetKB)) KB and saving to Photos..."
+            : "Photo captured. Automatically compressing below \(Int(compressionTargetKB)) KB and saving to Photos..."
 
         originalImages = [image]
         compressedResults = []
@@ -262,7 +274,7 @@ struct ContentView: View {
         isCompressing = false
 
         if saveSuccess {
-            statusMessage = "The photo was compressed and saved to Photos. No original gallery image needed to be deleted for the camera flow."
+            statusMessage = "The photo was compressed to under \(Int(compressionTargetKB)) KB and saved to Photos."
         } else {
             statusMessage = "The photo was compressed, but it could not be saved to Photos."
         }
@@ -321,26 +333,19 @@ struct ContentView: View {
         }
     }
 
-    private func requestPhotoLibraryAccessIfNeeded() async -> Bool {
-        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+    private func saveImageDataToPhotoLibrary(data: Data) async -> Bool {
+        let status = PHPhotoLibrary.authorizationStatus(for: .addOnly)
 
-        switch status {
-        case .authorized, .limited:
-            return true
-        case .notDetermined:
-            let newStatus = await withCheckedContinuation { continuation in
-                PHPhotoLibrary.requestAuthorization(for: .readWrite) { status in
-                    continuation.resume(returning: status)
-                }
+        if status == .notDetermined {
+            let newStatus = await requestPhotoAddPermission()
+            if newStatus != .authorized && newStatus != .limited {
+                return false
             }
-            return newStatus == .authorized || newStatus == .limited
-        default:
+        } else if status != .authorized && status != .limited {
             return false
         }
-    }
 
-    private func saveImageDataToPhotoLibrary(data: Data) async -> Bool {
-        await withCheckedContinuation { continuation in
+        return await withCheckedContinuation { continuation in
             PHPhotoLibrary.shared().performChanges({
                 let options = PHAssetResourceCreationOptions()
                 let request = PHAssetCreationRequest.forAsset()
@@ -351,18 +356,10 @@ struct ContentView: View {
         }
     }
 
-    private func deleteOriginalPhoto(assetIdentifier: String) async -> Bool {
-        let assets = PHAsset.fetchAssets(withLocalIdentifiers: [assetIdentifier], options: nil)
-
-        guard let asset = assets.firstObject else {
-            return false
-        }
-
-        return await withCheckedContinuation { continuation in
-            PHPhotoLibrary.shared().performChanges({
-                PHAssetChangeRequest.deleteAssets([asset] as NSArray)
-            }) { success, _ in
-                continuation.resume(returning: success)
+    private func requestPhotoAddPermission() async -> PHAuthorizationStatus {
+        await withCheckedContinuation { continuation in
+            PHPhotoLibrary.requestAuthorization(for: .addOnly) { status in
+                continuation.resume(returning: status)
             }
         }
     }
